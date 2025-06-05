@@ -1,4 +1,5 @@
-package classes;
+package modelo;
 
 public class Dama {
+    
 }
