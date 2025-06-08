@@ -16,7 +16,12 @@ class CasaTest {
     @Test
     void testColocarRemoverPeca() {
         Casa casa = new Casa(0, 0);
-        Peca peca = new Peca(Peca.Cor.BRANCA);
+        Peca peca = new Peca(Peca.Cor.BRANCA) {
+            @Override
+            public boolean isMovimentoValido(Tabuleiro tabuleiro, Casa origem, Casa destino) {
+                return false;
+            }
+        };
 
         casa.setPeca(peca);
         assertFalse(casa.estaVazia());
