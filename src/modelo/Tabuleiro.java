@@ -55,16 +55,16 @@ public class Tabuleiro {
                 if (casas[linha][coluna].estaVazia()) {
                     System.out.print(" . ");
                 } else if (peca.getCor() == Peca.Cor.BRANCA) {
-                    // Se for Dama, imprime D, senão B
+                    // Se for Dama, imprime DB, senão B
                     if (peca instanceof Dama) {
-                        System.out.print(" D ");
+                        System.out.print("DB ");
                     } else {
                         System.out.print(" B ");
                     }
                 } else {
-                    // Se for Dama, imprime A, senão P (A de Dama preta - Andina)
+                    // Se for Dama, imprime DP, senão P
                     if (peca instanceof Dama) {
-                        System.out.print(" A ");
+                        System.out.print("DP ");
                     } else {
                         System.out.print(" P ");
                     }
@@ -80,30 +80,6 @@ public class Tabuleiro {
         } else {
             // Considerar lançar uma exceção aqui se for mais apropriado para o design do jogo
             return null;
-        }
-    }
-
-    public void moverPeca(Casa origem, Casa destino) throws MovimentoInvalidoException {
-        if (origem.estaVazia()) {
-            throw new MovimentoInvalidoException("A casa de origem está vazia.");
-        }
-        if (!destino.estaVazia()) {
-            throw new MovimentoInvalidoException("A casa de destino não está vazia.");
-        }
-
-        Peca peca = origem.getPeca();
-        destino.setPeca(peca);
-        origem.setPeca(null);
-
-        // Verificar promoção
-        if (peca.getCor() == Peca.Cor.BRANCA && destino.getLinha() == 0) {
-            if (!(peca instanceof Dama)) {
-                destino.setPeca(new Dama(Peca.Cor.BRANCA));
-            }
-        } else if (peca.getCor() == Peca.Cor.PRETA && destino.getLinha() == TAMANHO - 1) {
-            if (!(peca instanceof Dama)) {
-                destino.setPeca(new Dama(Peca.Cor.PRETA));
-            }
         }
     }
 
