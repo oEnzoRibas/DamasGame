@@ -131,14 +131,37 @@ class TabuleiroTest {
     }
 
     @Test
-    void testIsCapturaValidaPecaRegularParaTrasInvalido() {
+    void testIsCapturaValidaPecaRegularBrancaParaTrasValido() { // Renamed and logic updated
         limparTabuleiro();
-        Casa origem = tabuleiro.getCasa(2, 1); // Preta
-        Casa pecaCapturada = tabuleiro.getCasa(1, 2); // Branca (simulando tentativa de captura para trás)
-        Casa destino = tabuleiro.getCasa(0, 3);
-        origem.setPeca(new PecaRegular(Peca.Cor.PRETA));
-        pecaCapturada.setPeca(new PecaRegular(Peca.Cor.BRANCA));
-        assertFalse(tabuleiro.isCapturaValida(origem, pecaCapturada, destino));
+        Peca pecaBranca = new PecaRegular(Peca.Cor.BRANCA);
+        Peca pecaPreta = new PecaRegular(Peca.Cor.PRETA);
+
+        Casa origem = tabuleiro.getCasa(3, 3);
+        Casa intermediaria = tabuleiro.getCasa(4, 4); // Backward for white
+        Casa destino = tabuleiro.getCasa(5, 5);
+
+        origem.setPeca(pecaBranca);
+        intermediaria.setPeca(pecaPreta);
+        // destino is empty
+
+        assertTrue(tabuleiro.isCapturaValida(origem, intermediaria, destino), "PecaRegular BRANCA should now be able to capture backward.");
+    }
+
+    @Test
+    void testIsCapturaValidaPecaRegularPretaParaTrasValido() { // New test for Preta capturing backward
+        limparTabuleiro();
+        Peca pecaPreta = new PecaRegular(Peca.Cor.PRETA);
+        Peca pecaBranca = new PecaRegular(Peca.Cor.BRANCA);
+
+        Casa origem = tabuleiro.getCasa(4, 4);
+        Casa intermediaria = tabuleiro.getCasa(3, 3); // Backward for black
+        Casa destino = tabuleiro.getCasa(2, 2);
+
+        origem.setPeca(pecaPreta);
+        intermediaria.setPeca(pecaBranca);
+        // destino is empty
+
+        assertTrue(tabuleiro.isCapturaValida(origem, intermediaria, destino), "PecaRegular PRETA should now be able to capture backward.");
     }
 
     @Test
@@ -411,18 +434,24 @@ class TabuleiroTest {
     }
 
     @Test
-    void testGetPossiveisCapturasPecaRegularApenasParaFrente() {
+    void testGetPossiveisCapturasPecaRegularIncluiTras() { // Renamed and logic updated
         limparTabuleiro();
         Casa origem = tabuleiro.getCasa(3,3);
-        origem.setPeca(new PecaRegular(Peca.Cor.BRANCA));
-        // Place a black piece that can be captured (forward for white)
+        Peca pecaBranca = new PecaRegular(Peca.Cor.BRANCA);
+        origem.setPeca(pecaBranca);
+
+        // Forward capture opportunity for White
         tabuleiro.getCasa(2,2).setPeca(new PecaRegular(Peca.Cor.PRETA));
-        // Place a black piece that would require backward capture (invalid for regular white)
+        Casa destinoFrente = tabuleiro.getCasa(1,1);
+
+        // Backward capture opportunity for White
         tabuleiro.getCasa(4,4).setPeca(new PecaRegular(Peca.Cor.PRETA));
+        Casa destinoTras = tabuleiro.getCasa(5,5);
 
         List<Casa> capturas = tabuleiro.getPossiveisCapturas(origem);
-        assertEquals(1, capturas.size());
-        assertEquals(tabuleiro.getCasa(1,1), capturas.get(0)); // Only forward capture
+        assertEquals(2, capturas.size(), "Should find two captures (forward and backward)");
+        assertTrue(capturas.contains(destinoFrente), "Should contain forward capture destination");
+        assertTrue(capturas.contains(destinoTras), "Should contain backward capture destination");
     }
 
     @Test

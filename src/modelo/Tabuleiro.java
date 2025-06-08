@@ -276,21 +276,8 @@ public class Tabuleiro {
         // Math.abs(origem.getLinha() - destino.getLinha()) == 2
         // Math.abs(origem.getColuna() - destino.getColuna()) == 2
 
-        // Piece-Specific Capture Rules (Direction for PecaRegular)
-        if (pecaMovendo instanceof PecaRegular) {
-            if (pecaMovendo.getCor() == Peca.Cor.BRANCA) {
-                // White pieces (BRANCA) must capture by moving "up" the board (decreasing row index)
-                if (destino.getLinha() >= origem.getLinha()) {
-                    return false;
-                }
-            } else { // PRETA
-                // Black pieces (PRETA) must capture by moving "down" the board (increasing row index)
-                if (destino.getLinha() <= origem.getLinha()) {
-                    return false;
-                }
-            }
-        }
-        // Damas can capture in any diagonal direction, so no specific check needed here for Dama.
+        // Directional check for PecaRegular removed as per requirement.
+        // All pieces (PecaRegular and Dama) can now capture in any valid diagonal direction.
 
         return true; // All checks pass
     }
