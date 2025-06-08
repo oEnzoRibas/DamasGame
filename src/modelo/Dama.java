@@ -1,5 +1,11 @@
 package modelo;
 
-public class Dama {
-    
+import modelo.Peca.Cor;
+
+public class Dama extends Peca {
+
+    public Dama(Cor cor) {
+        super(cor);
+        promover();
+    }
 }

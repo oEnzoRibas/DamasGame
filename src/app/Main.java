@@ -1,6 +1,6 @@
 package app;
 
-import controle.Jogo
+import controle.Jogo;
 
 public class Main {
     public static void main(String[] args) {
