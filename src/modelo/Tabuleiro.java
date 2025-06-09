@@ -11,10 +11,12 @@ public class Tabuleiro {
     public static final int TAMANHO = 8;
     private Casa[][] casas;
 
+
     /**
      * Construtor do Tabuleiro.
      * Inicializa um tabuleiro 8x8 e coloca as peças iniciais.
      */
+
     public Tabuleiro() {
         casas = new Casa[TAMANHO][TAMANHO];
         for (int linha = 0; linha < TAMANHO; linha++) {
@@ -82,13 +84,17 @@ public class Tabuleiro {
         if (linha >= 0 && linha < TAMANHO && coluna >= 0 && coluna < TAMANHO) {
             return casas[linha][coluna];
         } else {
+
+
             return null;
         }
     }
 
     // Renamed from moverPeca to clarify its role for simple moves
     private void executarMovimentoSimples(Casa origem, Casa destino) throws MovimentoInvalidoException {
+
         // Verificar se a casa de origem está vazia e a de destino está vazia
+
         if (origem.estaVazia()) {
             throw new MovimentoInvalidoException("A casa de origem está vazia.");
         }
@@ -96,8 +102,10 @@ public class Tabuleiro {
             throw new MovimentoInvalidoException("A casa de destino não está vazia para movimento simples.");
         }
 
+
         // move a peça de origem para destino
         // e limpa a casa de origem
+
         Peca peca = origem.getPeca();
         destino.setPeca(peca);
         origem.setPeca(null);
@@ -106,6 +114,7 @@ public class Tabuleiro {
         if (!(peca instanceof Dama) &&
             ((peca.getCor() == Peca.Cor.BRANCA && destino.getLinha() == 0) ||
              (peca.getCor() == Peca.Cor.PRETA && destino.getLinha() == TAMANHO - 1))) {
+
             destino.setPeca(new Dama(peca.getCor()));
         }
     }
@@ -125,7 +134,9 @@ public class Tabuleiro {
         Peca pecaCapturada = casaPecaCapturada.getPeca(); // Ensure this isn't null before calling getCor()
 
         if (pecaCapturada == null) { // Defensive check, though casaPecaCapturada.estaVazia() should cover it
+
              throw new MovimentoInvalidoException("Peça a ser capturada não existe.");
+
         }
         if (pecaMovendo.getCor() == pecaCapturada.getCor()) {
             throw new MovimentoInvalidoException("Não pode capturar peça da mesma cor.");
@@ -137,8 +148,10 @@ public class Tabuleiro {
 
         // Promotion logic after capture
         if (!(pecaMovendo instanceof Dama) &&
+
             ((pecaMovendo.getCor() == Peca.Cor.BRANCA && destino.getLinha() == 0) ||
              (pecaMovendo.getCor() == Peca.Cor.PRETA && destino.getLinha() == TAMANHO - 1))) {
+
             destino.setPeca(new Dama(pecaMovendo.getCor()));
         }
     }
@@ -160,6 +173,7 @@ public class Tabuleiro {
         if (deltaLinhaAbs > 1 && deltaLinhaAbs == deltaColunaAbs) {
             int dirLinha = Integer.signum(destino.getLinha() - origem.getLinha());
             int dirColuna = Integer.signum(destino.getColuna() - origem.getColuna());
+
             // Removed duplicate declarations of dirLinha and dirColuna here
             Casa casaPecaCapturada = null;
 
@@ -222,10 +236,12 @@ public class Tabuleiro {
             }
         }
 
+
         if (isMovimentoValido(origem, destino)) {
             executarMovimentoSimples(origem, destino);
             return;
         }
+
         throw new MovimentoInvalidoException("Movimento inválido (não é captura válida nem movimento simples válido).");
     }
 
@@ -242,7 +258,9 @@ public class Tabuleiro {
             return false;
         }
 
+
         // Path Clearing for Dama
+
         if (peca instanceof Dama) {
             int linhaDiff = destino.getLinha() - origem.getLinha();
             int colDiff = destino.getColuna() - origem.getColuna();
@@ -255,15 +273,18 @@ public class Tabuleiro {
 
             while (currentLinha != destino.getLinha() || currentColuna != destino.getColuna()) {
                 if (currentLinha < 0 || currentLinha >= TAMANHO || currentColuna < 0 || currentColuna >= TAMANHO) {
+
                     return false;
                 }
                 if (!getCasa(currentLinha, currentColuna).estaVazia()) {
                     return false;
+
                 }
                 currentLinha += stepLinha;
                 currentColuna += stepColuna;
             }
         }
+
         return true;
     }
 
@@ -350,6 +371,7 @@ public class Tabuleiro {
             }
             return true; 
         }
+
     }
 
     public List<Casa> getPossiveisCapturas(Casa origem) {
@@ -359,6 +381,7 @@ public class Tabuleiro {
         }
 
         Peca peca = origem.getPeca();
+
         int[] deltaLinhaDirs = {-1, -1, 1, 1};
         int[] deltaColunaDirs = {-1, 1, -1, 1};
 
@@ -419,6 +442,7 @@ public class Tabuleiro {
                             capturas.add(casaDestino);
                         }
                         break;
+
                     }
                 }
             }
@@ -439,4 +463,6 @@ public class Tabuleiro {
         }
         return contadorOponente == 0;
     }
+
 }
+

@@ -1,5 +1,6 @@
 package modelo;
 
+
 /**
  * Classe que representa uma peça regular no jogo de damas.
  * As peças regulares podem se mover diagonalmente para frente ou para trás,
@@ -26,12 +27,14 @@ public class PecaRegular extends Peca {
      * @param destino A casa de destino da peça.
      * @return true se o movimento for válido, false caso contrário.
      */
+
     @Override
     public boolean isMovimentoValido(Tabuleiro tabuleiro, Casa origem, Casa destino) {
         if (origem == null || destino == null) {
             return false;
         }
         if (origem.estaVazia() || !destino.estaVazia()) {
+
             return false; // A casa de origem deve conter uma peça e a casa de destino deve estar vazia
         }
 
@@ -50,3 +53,4 @@ public class PecaRegular extends Peca {
         return Math.abs(deltaLinha) == 1;
     }
 }
+

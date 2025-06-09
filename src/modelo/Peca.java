@@ -6,20 +6,25 @@ import modelo.Casa;
 public abstract class Peca {
 
     // Enumeração para as cores das peças
+
     public enum Cor {
         BRANCA,
         PRETA
     }
 
+
     // Atributo
     private Cor cor;
 
     // Construtor
+
     public Peca(Cor cor) {
         this.cor = cor;
     }
 
+
     // getter
+
     public Cor getCor() {
         return cor;
     }
@@ -35,3 +40,4 @@ public abstract class Peca {
      */
     public abstract boolean isMovimentoValido(Tabuleiro tabuleiro, Casa origem, Casa destino);
 }
+

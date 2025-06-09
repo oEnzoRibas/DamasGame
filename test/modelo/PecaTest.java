@@ -45,6 +45,7 @@ class PecaTest {
     }
 
     @Test
+
     void testPecaRegularBrancaMovimentoValidoDiagonalParaTras() { // Renamed
         Peca peca = new PecaRegular(Peca.Cor.BRANCA);
         casa33.setPeca(peca);
@@ -56,6 +57,7 @@ class PecaTest {
         Peca peca = new PecaRegular(Peca.Cor.PRETA);
         casa33.setPeca(peca);
         assertTrue(peca.isMovimentoValido(tabuleiro, casa33, casa22), "Preta: 3,3 -> 2,2 (para trás agora válido)"); // assert changed
+
     }
 
     @Test

@@ -34,6 +34,7 @@ class TabuleiroTest {
     }
 
     @Test
+
     void testIsMovimentoValidoPecaRegularParaTrasValido() { // Renamed
         limparTabuleiro();
         Casa origem = tabuleiro.getCasa(3, 0);
@@ -43,6 +44,7 @@ class TabuleiroTest {
     }
 
     /* // Commented out as per subtask instructions
+
     @Test
     void testIsMovimentoValidoPecaRegularCorErrada() {
         limparTabuleiro();
@@ -51,7 +53,9 @@ class TabuleiroTest {
         origem.setPeca(new PecaRegular(Peca.Cor.PRETA));
         assertFalse(origem.getPeca().isMovimentoValido(tabuleiro, origem, destino), "PecaRegular Preta cannot move backwards (like Branca)");
     }
+
     */
+
 
     @Test
     void testIsMovimentoValidoDamaSimplesFrente() {
@@ -366,12 +370,14 @@ class TabuleiroTest {
         Casa origem = tabuleiro.getCasa(1, 1);
         Casa destino = tabuleiro.getCasa(4, 4);
         origem.setPeca(new Dama(Peca.Cor.BRANCA));
+
         // Block path with a FRIENDLY piece to ensure it's not a capture attempt
         tabuleiro.getCasa(2, 2).setPeca(new PecaRegular(Peca.Cor.BRANCA));
 
         assertThrows(MovimentoInvalidoException.class, () -> {
             tabuleiro.moverPeca(origem, destino); // Should try simple move, fail due to block, and throw.
         }, "Dama's simple move blocked by a friendly piece should throw MovimentoInvalidoException");
+
     }
 
     // --- getPossiveisCapturas() Tests ---
@@ -403,6 +409,7 @@ class TabuleiroTest {
         limparTabuleiro();
         Casa origem = tabuleiro.getCasa(3, 3); // Dama Branca
         Casa pecaCapturada = tabuleiro.getCasa(4, 4); // Preta
+
         origem.setPeca(new Dama(Peca.Cor.BRANCA));
         pecaCapturada.setPeca(new PecaRegular(Peca.Cor.PRETA));
 
@@ -416,11 +423,13 @@ class TabuleiroTest {
         assertTrue(capturas.contains(destino1), "Should contain (5,5)");
         assertTrue(capturas.contains(destino2), "Should contain (6,6)");
         assertTrue(capturas.contains(destino3), "Should contain (7,7)");
+
     }
 
     @Test
     void testGetPossiveisCapturasMultiplasPossiveisDama() {
         limparTabuleiro();
+
         Casa origem = tabuleiro.getCasa(3, 3); // Dama Branca
         origem.setPeca(new Dama(Peca.Cor.BRANCA));
 
@@ -457,6 +466,7 @@ class TabuleiroTest {
         assertTrue(capturas.contains(destinoD1));
         assertTrue(capturas.contains(destinoD2));
         assertTrue(capturas.contains(destinoD3));
+
     }
 
     @Test
@@ -486,6 +496,7 @@ class TabuleiroTest {
         Casa origem = tabuleiro.getCasa(3,3); // Empty
         assertTrue(tabuleiro.getPossiveisCapturas(origem).isEmpty());
     }
+
 
     // --- Tests for Dama's "Flying Capture" ---
 
@@ -695,6 +706,7 @@ class TabuleiroTest {
         tabuleiro.getCasa(2, 2).setPeca(new PecaRegular(Peca.Cor.BRANCA)); // Block path with friendly piece
         assertFalse(tabuleiro.isMovimentoValido(origem, destino), "Dama simple move should be blocked by friendly piece");
     }
+
 
      @Test
     void testInicializacaoTabuleiro() { // Test from previous version, still relevant

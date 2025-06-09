@@ -22,11 +22,13 @@ public class Jogo {
     private boolean emSequenciaDeCaptura = false;
     private Casa pecaEmSequencia = null;
 
+
     /*
 
     Retorno : Mapa < Casa atual , Lista de Casas que são capturas obrigatórias >
     Descrição : Este método percorre o tabuleiro e verifica se há capturas obrigatórias para o jogador atual.
     */
+
 
     private Map<Casa, List<Casa>> encontrarCapturasObrigatorias(Jogador jogador) {
         Map<Casa, List<Casa>> capturasObrigatorias = new HashMap<>();
@@ -47,8 +49,10 @@ public class Jogo {
     public void iniciar() {
         tabuleiro = new Tabuleiro();
         scanner = new Scanner(System.in);
+
         // Inicia os jogadores
         // Jogador 1 (Brancas) e Jogador 2 (Pretas)
+
         jogador1 = new Jogador("Jogador 1 (Brancas)", Peca.Cor.BRANCA);
         jogador2 = new Jogador("Jogador 2 (Pretas)", Peca.Cor.PRETA);
         jogadorAtual = jogador1;
@@ -69,7 +73,9 @@ public class Jogo {
                         Casa origem = entry.getKey();
                         for (Casa destino : entry.getValue()) {
                             System.out.println("De " + origem.getLinha() + "," + origem.getColuna() +
+
                                                " para " + destino.getLinha() + "," + destino.getColuna());
+
                         }
                     }
                 }
@@ -101,7 +107,9 @@ public class Jogo {
                 if (casaOrigem == null || casaDestino == null) {
                     throw new MovimentoInvalidoException("Coordenadas fora do tabuleiro.");
                 }
+
                  if (casaOrigem.estaVazia()) {
+
                     throw new MovimentoInvalidoException("Casa de origem está vazia.");
                 }
                 if (casaOrigem.getPeca().getCor() != jogadorAtual.getCorPecas()) {
@@ -121,6 +129,7 @@ public class Jogo {
                     if (!destinosPossiveisParaOrigem.contains(casaDestino)) {
                         throw new MovimentoInvalidoException("Movimento inválido. O destino escolhido não é uma captura válida para a peça de origem selecionada.");
                     }
+
                     // Se chegamos aqui, o movimento selecionado é uma captura obrigatória.
                     // O método moverPeca irá validar novamente, o que é aceitável.
                 }
@@ -133,10 +142,12 @@ public class Jogo {
 
                 // Verifica se o movimento é uma captura com base na distância
                 // Esta verificação agora é mais uma validação geral; a captura obrigatória já foi validada acima.
+
                 int deltaLinhaAbs = Math.abs(linhaOrigem - linhaDestino);
                 int deltaColunaAbs = Math.abs(colunaOrigem - colunaDestino);
 
                 if (!mandatoryCapturesMap.isEmpty() && !(deltaLinhaAbs > 1 && deltaColunaAbs > 1 && deltaLinhaAbs == deltaColunaAbs) ) {
+
                      // Se existem capturas obrigatórias, apenas movimentos de captura são permitidos.
                      // Um movimento simples (delta == 1) ou qualquer movimento não diagonal/não salto é inválido.
                      throw new MovimentoInvalidoException("Movimento inválido. Uma captura é obrigatória.");
@@ -157,6 +168,7 @@ public class Jogo {
                 // Isso depende do fato de que moverPeca teria lançado um erro se não fosse um salto válido
                 // ou um movimento simples válido.
                 if (deltaLinhaAbs > 1) { 
+
                     foiCaptura = true;
                 }
 
@@ -171,14 +183,17 @@ public class Jogo {
 
                 if (foiCaptura) {
                     Casa pecaQueCapturouUltimaPosicao = casaDestino;
+
                     // Verifica se a sequência de capturas deve continuar apenas se o jogador atual ainda for o mesmo
                     // (o que será verdade se emSequenciaDeCaptura era false antes desta captura)
                     // OU se ele já estava em uma sequência.
+
                     List<Casa> novasCapturasPossiveis = tabuleiro.getPossiveisCapturas(pecaQueCapturouUltimaPosicao);
                     if (!novasCapturasPossiveis.isEmpty()) {
                         System.out.println("Você realizou uma captura e pode capturar novamente com a mesma peça.");
                         emSequenciaDeCaptura = true;
                         pecaEmSequencia = pecaQueCapturouUltimaPosicao;
+
                     } else {
                         emSequenciaDeCaptura = false;
                         pecaEmSequencia = null;
@@ -193,6 +208,7 @@ public class Jogo {
             // Se emSequenciaDeCaptura for verdadeiro neste ponto, o jogador não troca.
             // O loop continua com o mesmo jogador.
 
+
             } catch (MovimentoInvalidoException | NumberFormatException e) {
                 System.out.println("Erro: " + e.getMessage());
                 System.out.println("Tente novamente.");
@@ -200,4 +216,6 @@ public class Jogo {
         }
         scanner.close();
     }
+
 }
+

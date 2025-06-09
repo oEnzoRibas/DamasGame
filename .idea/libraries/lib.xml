@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/app/Oracle_JDK-24/lib/jrt-fs.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/app/Oracle_JDK-24/lib/src.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
