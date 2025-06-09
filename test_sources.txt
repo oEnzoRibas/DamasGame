@@ -1,4 +1,4 @@
-test/modelo/TabuleiroTest.java
 test/modelo/PecaTest.java
 test/modelo/CasaTest.java
+test/modelo/TabuleiroTest.java
 test/controle/JogoTest.java

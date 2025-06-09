@@ -1,8 +1,9 @@
 src/modelo/Peca.java
 src/modelo/Jogador.java
 src/modelo/Tabuleiro.java
+src/modelo/PecaRegular.java
 src/modelo/Dama.java
 src/modelo/Casa.java
 src/controle/Jogo.java
-src/app/Main.java
 src/util/MovimentoInvalidoException.java
+src/app/Main.java

@@ -16,7 +16,7 @@ class CasaTest {
     @Test
     void testColocarRemoverPeca() {
         Casa casa = new Casa(0, 0);
-        Peca peca = new Peca(Peca.Cor.BRANCA);
+        Peca peca = new PecaRegular(Peca.Cor.BRANCA); // Changed to PecaRegular
 
         casa.setPeca(peca);
         assertFalse(casa.estaVazia());

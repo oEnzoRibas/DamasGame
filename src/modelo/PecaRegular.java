@@ -24,13 +24,7 @@ public class PecaRegular extends Peca {
             return false;
         }
 
-        // Check direction based on piece color
-        if (getCor() == Cor.BRANCA) {
-            // White pieces move "up" the board (decreasing row index)
-            return deltaLinha == -1;
-        } else { // PRETA
-            // Black pieces move "down" the board (increasing row index)
-            return deltaLinha == 1;
-        }
+        // Allow movement one step diagonally forward or backward
+        return Math.abs(deltaLinha) == 1;
     }
 }
