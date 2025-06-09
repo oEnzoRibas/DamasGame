@@ -11,6 +11,10 @@ public class Tabuleiro {
     public static final int TAMANHO = 8;
     private Casa[][] casas;
 
+    /**
+     * Construtor do Tabuleiro.
+     * Inicializa um tabuleiro 8x8 e coloca as peças iniciais.
+     */
     public Tabuleiro() {
         casas = new Casa[TAMANHO][TAMANHO];
         for (int linha = 0; linha < TAMANHO; linha++) {
@@ -78,13 +82,13 @@ public class Tabuleiro {
         if (linha >= 0 && linha < TAMANHO && coluna >= 0 && coluna < TAMANHO) {
             return casas[linha][coluna];
         } else {
-            // Considerar lançar uma exceção aqui se for mais apropriado para o design do jogo
             return null;
         }
     }
 
     // Renamed from moverPeca to clarify its role for simple moves
     private void executarMovimentoSimples(Casa origem, Casa destino) throws MovimentoInvalidoException {
+        // Verificar se a casa de origem está vazia e a de destino está vazia
         if (origem.estaVazia()) {
             throw new MovimentoInvalidoException("A casa de origem está vazia.");
         }
@@ -92,11 +96,13 @@ public class Tabuleiro {
             throw new MovimentoInvalidoException("A casa de destino não está vazia para movimento simples.");
         }
 
+        // move a peça de origem para destino
+        // e limpa a casa de origem
         Peca peca = origem.getPeca();
         destino.setPeca(peca);
         origem.setPeca(null);
 
-        // Verificar promoção
+        // Verificar promoção ( Virar Dama)
         if (!(peca instanceof Dama) &&
             ((peca.getCor() == Peca.Cor.BRANCA && destino.getLinha() == 0) ||
              (peca.getCor() == Peca.Cor.PRETA && destino.getLinha() == TAMANHO - 1))) {
@@ -184,25 +190,24 @@ public class Tabuleiro {
                     pecaEncontradaNoCaminho.getCor() != peca.getCor()) {
                     casaPecaCapturada = casaPecaEncontradaTemporaria;
                 } else {
-                    // Not a valid Dama capture (0 or >1 pieces in path, or the single piece is friendly)
-                    // This will then fall through to simple move logic or throw.
+                    throw new MovimentoInvalidoException("Tentativa de captura inválida (Dama): " +
+                        "nenhuma peça inimiga encontrada ou mais de uma peça no caminho.");
                 }
             } else { // PecaRegular
-                // For PecaRegular, the captured piece must be exactly one step from origin
-                // and the destination two steps from origin.
-                // This specific delta check (deltaLinhaAbs > 1) implies deltaLinhaAbs == 2 for PecaRegular.
+                // para PecaRegular, a peça de captura deve estar exatamente uma casa diagonal
+                // entre a origem e o destino, ou seja, uma casa na diagonal
                 if (deltaLinhaAbs == 2) { // Standard jump distance for PecaRegular
                     int linhaIntermediaria = origem.getLinha() + dirLinha;
                     int colunaIntermediaria = origem.getColuna() + dirColuna;
                      if (linhaIntermediaria >= 0 && linhaIntermediaria < TAMANHO &&
                          colunaIntermediaria >= 0 && colunaIntermediaria < TAMANHO) {
                         casaPecaCapturada = getCasa(linhaIntermediaria, colunaIntermediaria);
-                        // Further checks if casaPecaCapturada is not null, not empty, and enemy are below
                     }
                 }
             }
 
-            // Now, common validation for both Dama (if a single enemy was identified) and PecaRegular
+            // Se casaPecaCapturada foi encontrada e não está vazia,
+            // e é uma peça inimiga, então é uma captura válida
             if (casaPecaCapturada != null && !casaPecaCapturada.estaVazia() &&
                 casaPecaCapturada.getPeca().getCor() != peca.getCor()) {
                 if (isCapturaValida(origem, casaPecaCapturada, destino)) {
@@ -212,20 +217,15 @@ public class Tabuleiro {
                     throw new MovimentoInvalidoException("Tentativa de captura inválida (isCapturaValida falhou).");
                 }
             } else if (peca instanceof PecaRegular) {
-                // This case handles if PecaRegular tried to jump but intermediate was empty, friendly, or off-board (handled by casaPecaCapturada being null)
+                // lida com o caso de PecaRegular que não encontrou uma peça inimiga válida ( peça amiga, vazia ou fora do tabuleiro)
                 throw new MovimentoInvalidoException("Peça regular: Salto inválido (sem peça inimiga para capturar ou intermediária fora do tabuleiro).");
             }
-            // If Dama and no valid single enemy piece was found for capture, fall through to simple move logic.
         }
 
-        // Attempt Simple Move Logic (if not a valid capture or if capture attempt failed in a way that allows simple move)
-        // isMovimentoValido already handles path clearing for Dama's simple moves
         if (isMovimentoValido(origem, destino)) {
             executarMovimentoSimples(origem, destino);
             return;
         }
-
-        // If neither capture nor simple move was successful
         throw new MovimentoInvalidoException("Movimento inválido (não é captura válida nem movimento simples válido).");
     }
 
@@ -242,7 +242,7 @@ public class Tabuleiro {
             return false;
         }
 
-        // Path Clearing for Dama (King)
+        // Path Clearing for Dama
         if (peca instanceof Dama) {
             int linhaDiff = destino.getLinha() - origem.getLinha();
             int colDiff = destino.getColuna() - origem.getColuna();
@@ -255,18 +255,16 @@ public class Tabuleiro {
 
             while (currentLinha != destino.getLinha() || currentColuna != destino.getColuna()) {
                 if (currentLinha < 0 || currentLinha >= TAMANHO || currentColuna < 0 || currentColuna >= TAMANHO) {
-                    // This case should ideally be prevented by Peca.isMovimentoValido,
-                    // but as a safeguard:
                     return false;
                 }
                 if (!getCasa(currentLinha, currentColuna).estaVazia()) {
-                    return false; // Path is blocked
+                    return false;
                 }
                 currentLinha += stepLinha;
                 currentColuna += stepColuna;
             }
         }
-        return true; // All checks passed
+        return true;
     }
 
     public boolean isCapturaValida(Casa origem, Casa casaPecaCapturada, Casa destino) {
@@ -276,87 +274,81 @@ public class Tabuleiro {
         if (!destino.estaVazia()) return false;
 
         Peca pecaMovendo = origem.getPeca();
-        if (pecaMovendo == null) return false; // Should be caught by origem.estaVazia()
+        if (pecaMovendo == null) return false;
 
         Peca pecaCapturadaCorpo = casaPecaCapturada.getPeca();
-        if (pecaCapturadaCorpo == null) return false; // Should be caught by casaPecaCapturada.estaVazia()
+        if (pecaCapturadaCorpo == null) return false; 
 
-        if (pecaMovendo.getCor() == pecaCapturadaCorpo.getCor()) return false; // Cannot capture own piece
+        if (pecaMovendo.getCor() == pecaCapturadaCorpo.getCor()) return false; // Captura sua propria cor
 
         if (!(pecaMovendo instanceof Dama)) {
-            // --- PecaRegular Capture Logic ---
-            // casaPecaCapturada must be diagonally adjacent to origem (1 step away)
+            // --- Logica para peças regulares ---
+            // casaPecaCapturada diagonalmente a 1 unidade de distancia
             if (Math.abs(casaPecaCapturada.getLinha() - origem.getLinha()) != 1 ||
                 Math.abs(casaPecaCapturada.getColuna() - origem.getColuna()) != 1) {
                 return false;
             }
-            // destino must be exactly one diagonal step beyond casaPecaCapturada.
             if (!(Math.abs(destino.getLinha() - casaPecaCapturada.getLinha()) == 1 &&
                   Math.abs(destino.getColuna() - casaPecaCapturada.getColuna()) == 1)) {
                 return false;
             }
-            // origem, casaPecaCapturada, destino must be on the same straight diagonal line (implicit by steps)
+            // origem, casaPecaCapturada, destino devem estar na mesma diagonal
             if (!(Integer.signum(casaPecaCapturada.getLinha() - origem.getLinha()) == Integer.signum(destino.getLinha() - casaPecaCapturada.getLinha()) &&
                   Integer.signum(casaPecaCapturada.getColuna() - origem.getColuna()) == Integer.signum(destino.getColuna() - casaPecaCapturada.getColuna()))) {
                 return false;
             }
-            return true; // All checks for PecaRegular capture pass
+            return true;
         } else {
-            // --- Dama "Flying Capture" Logic ---
-            // Collinearity & Diagonal Check
+            // --- Dama "Captura Voadora" Logica ---
             int deltaOrigemCapLinha = casaPecaCapturada.getLinha() - origem.getLinha();
             int deltaOrigemCapColuna = casaPecaCapturada.getColuna() - origem.getColuna();
             int deltaCapDestLinha = destino.getLinha() - casaPecaCapturada.getLinha();
             int deltaCapDestColuna = destino.getColuna() - casaPecaCapturada.getColuna();
 
-            if (Math.abs(deltaOrigemCapLinha) != Math.abs(deltaOrigemCapColuna) || // origem to captured is not diagonal
-                Math.abs(deltaCapDestLinha) != Math.abs(deltaCapDestColuna) ||     // captured to destino is not diagonal
-                deltaOrigemCapLinha == 0) { // Not a diagonal move (no change in line or col)
+            //verifica se a peça a ser capturada e o destino estão numa diagnonal da origem
+            if (Math.abs(deltaOrigemCapLinha) != Math.abs(deltaOrigemCapColuna) || 
+                Math.abs(deltaCapDestLinha) != Math.abs(deltaCapDestColuna) ||     
+                deltaOrigemCapLinha == 0) {
                 return false;
             }
 
-            // Must be in the same direction
+            // devem estar na mesma direção
             if (Integer.signum(deltaOrigemCapLinha) != Integer.signum(deltaCapDestLinha) ||
                 Integer.signum(deltaOrigemCapColuna) != Integer.signum(deltaCapDestColuna)) {
                 return false;
             }
 
-            // casaPecaCapturada must be strictly between origem and destino
-            // This is implicitly covered by the path clearing and direction checks,
-            // as path clearing will fail if casaPecaCapturada is not on the path.
-            // Explicit check:
+            // casaPecaCapturada deve estar estritamente entre origem e destino
             if (!(Math.abs(origem.getLinha() - destino.getLinha()) > Math.abs(origem.getLinha() - casaPecaCapturada.getLinha()) &&
-                  Math.abs(origem.getLinha() - destino.getLinha()) > Math.abs(casaPecaCapturada.getLinha() - destino.getLinha()))){
-                 //This check ensures casaPecaCapturada is between origem and destino.
-                 //And also that casaPecaCapturada is not the same as origem or destino.
+                  Math.abs(origem.getLinha() - destino.getLinha()) > Math.abs(casaPecaCapturada.getLinha() - destino.getLinha()))){      
                  return false;
             }
 
-
-            // Path Clearing from origem to casaPecaCapturada
+            /*
+             * Verifica que o caminho da captura da dama não tem nenhum bloqueio
+             */
             int stepLinhaPath1 = Integer.signum(deltaOrigemCapLinha);
             int stepColunaPath1 = Integer.signum(deltaOrigemCapColuna);
             int currL = origem.getLinha() + stepLinhaPath1;
             int currC = origem.getColuna() + stepColunaPath1;
             while ((currL != casaPecaCapturada.getLinha()) || (currC != casaPecaCapturada.getColuna())) {
-                if (currL < 0 || currL >= TAMANHO || currC < 0 || currC >= TAMANHO) return false; // Off board
-                if (!getCasa(currL, currC).estaVazia()) return false; // Path to captured piece blocked
+                if (currL < 0 || currL >= TAMANHO || currC < 0 || currC >= TAMANHO) return false; 
+                if (!getCasa(currL, currC).estaVazia()) return false; 
                 currL += stepLinhaPath1;
                 currC += stepColunaPath1;
             }
 
-            // Path Clearing from casaPecaCapturada to destino
-            int stepLinhaPath2 = Integer.signum(deltaCapDestLinha); // Should be same as stepLinhaPath1 due to earlier checks
-            int stepColunaPath2 = Integer.signum(deltaCapDestColuna); // Should be same as stepColunaPath1
+            int stepLinhaPath2 = Integer.signum(deltaCapDestLinha);
+            int stepColunaPath2 = Integer.signum(deltaCapDestColuna); 
             currL = casaPecaCapturada.getLinha() + stepLinhaPath2;
             currC = casaPecaCapturada.getColuna() + stepColunaPath2;
             while ((currL != destino.getLinha()) || (currC != destino.getColuna())) {
-                if (currL < 0 || currL >= TAMANHO || currC < 0 || currC >= TAMANHO) return false; // Off board
-                if (!getCasa(currL, currC).estaVazia()) return false; // Path to landing spot blocked
+                if (currL < 0 || currL >= TAMANHO || currC < 0 || currC >= TAMANHO) return false; 
+                if (!getCasa(currL, currC).estaVazia()) return false; 
                 currL += stepLinhaPath2;
                 currC += stepColunaPath2;
             }
-            return true; // All Dama checks pass
+            return true; 
         }
     }
 
@@ -367,8 +359,8 @@ public class Tabuleiro {
         }
 
         Peca peca = origem.getPeca();
-        int[] deltaLinhaDirs = {-1, -1, 1, 1}; // Directions for row changes
-        int[] deltaColunaDirs = {-1, 1, -1, 1}; // Directions for col changes
+        int[] deltaLinhaDirs = {-1, -1, 1, 1};
+        int[] deltaColunaDirs = {-1, 1, -1, 1};
 
         if (!(peca instanceof Dama)) {
             // --- PecaRegular getPossiveisCapturas logic ---
@@ -391,51 +383,42 @@ public class Tabuleiro {
                 }
             }
         } else {
-            // --- Dama "Flying Capture" getPossiveisCapturas logic ---
-            for (int d = 0; d < 4; d++) { // For each of the 4 diagonal directions
+            for (int d = 0; d < 4; d++) { 
                 int dirLinha = deltaLinhaDirs[d];
                 int dirColuna = deltaColunaDirs[d];
 
-                // Scan along the diagonal for a piece to capture
                 for (int i = 1; i < TAMANHO; i++) {
                     int lCap = origem.getLinha() + i * dirLinha;
                     int cCap = origem.getColuna() + i * dirColuna;
 
                     if (lCap < 0 || lCap >= TAMANHO || cCap < 0 || cCap >= TAMANHO) {
-                        break; // Off-board, stop scanning this direction
+                        break; 
                     }
 
                     Casa casaIntermedia = getCasa(lCap, cCap);
                     if (casaIntermedia.estaVazia()) {
-                        continue; // Path to potential capture is clear so far
+                        continue; 
                     }
 
-                    // Piece encountered
                     if (casaIntermedia.getPeca().getCor() == peca.getCor()) {
-                        break; // Blocked by a friendly piece, stop scanning this direction
+                        break;
                     } else {
-                        // Enemy piece found at casaIntermedia, this is the casaPecaACapturar
-                        // Now, scan for landing spots beyond casaIntermedia
+                        
                         for (int j = 1; j < TAMANHO; j++) {
                             int lDest = casaIntermedia.getLinha() + j * dirLinha;
                             int cDest = casaIntermedia.getColuna() + j * dirColuna;
 
                             if (lDest < 0 || lDest >= TAMANHO || cDest < 0 || cDest >= TAMANHO) {
-                                break; // Off-board, stop scanning for landing spots in this direction
+                                break; 
                             }
 
                             Casa casaDestino = getCasa(lDest, cDest);
                             if (!casaDestino.estaVazia()) {
-                                break; // Landing path blocked, stop scanning for landing spots
+                                break; 
                             }
-
-                            // Basic validation for adding to list. Full validation in isCapturaValida.
-                            // The path checks are implicitly done by these loops.
-                            // We are adding all empty squares after the first enemy.
-                            // isCapturaValida will be called by moverPeca for the chosen one.
                             capturas.add(casaDestino);
                         }
-                        break; // Dama captures only the first encountered enemy piece in a direction
+                        break;
                     }
                 }
             }

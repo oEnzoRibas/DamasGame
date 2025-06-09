@@ -18,7 +18,8 @@ public class Dama extends Peca {
         if (origem.estaVazia() || !destino.estaVazia()) {
             return false;
         }
-        // Dama movement is diagonal
+        // Garante que o movimento é diagonal
+        // A dama pode se mover qualquer número de casas diagonalmente
         return Math.abs(origem.getLinha() - destino.getLinha()) == Math.abs(origem.getColuna() - destino.getColuna());
     }
 }

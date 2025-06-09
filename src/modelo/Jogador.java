@@ -4,6 +4,10 @@ import modelo.Peca.Cor;
 
 public class Jogador {
 
+    /**
+     * Representa um jogador no jogo de damas.
+     * Cada jogador tem um nome e uma cor de peças (branca ou preta).
+     */
     private String nome;
     private Cor corPecas;
 
