@@ -4,14 +4,14 @@ import modelo.Tabuleiro;
 import modelo.Jogador;
 import modelo.Peca;
 import modelo.Casa;
-import modelo.Peca; // Added for Peca.Cor
-import modelo.Tabuleiro; // Added for Tabuleiro.TAMANHO
+import modelo.Peca; 
+import modelo.Tabuleiro; 
 import util.MovimentoInvalidoException;
 import java.util.Scanner;
 import java.util.List;
-import java.util.Map; // Added for Map
-import java.util.HashMap; // Added for HashMap
-import java.util.ArrayList; // Added for ArrayList in helper
+import java.util.Map; 
+import java.util.HashMap; 
+import java.util.ArrayList; 
 
 public class Jogo {
     private Tabuleiro tabuleiro;
@@ -22,7 +22,14 @@ public class Jogo {
     private boolean emSequenciaDeCaptura = false;
     private Casa pecaEmSequencia = null;
 
-    // Helper method to find all mandatory captures for the current player
+
+    /*
+
+    Retorno : Mapa < Casa atual , Lista de Casas que são capturas obrigatórias >
+    Descrição : Este método percorre o tabuleiro e verifica se há capturas obrigatórias para o jogador atual.
+    */
+
+
     private Map<Casa, List<Casa>> encontrarCapturasObrigatorias(Jogador jogador) {
         Map<Casa, List<Casa>> capturasObrigatorias = new HashMap<>();
         for (int linha = 0; linha < Tabuleiro.TAMANHO; linha++) {
@@ -42,7 +49,10 @@ public class Jogo {
     public void iniciar() {
         tabuleiro = new Tabuleiro();
         scanner = new Scanner(System.in);
-        // Make sure Peca.Cor is accessible or use direct values if defined elsewhere.
+
+        // Inicia os jogadores
+        // Jogador 1 (Brancas) e Jogador 2 (Pretas)
+
         jogador1 = new Jogador("Jogador 1 (Brancas)", Peca.Cor.BRANCA);
         jogador2 = new Jogador("Jogador 2 (Pretas)", Peca.Cor.PRETA);
         jogadorAtual = jogador1;
@@ -63,7 +73,9 @@ public class Jogo {
                         Casa origem = entry.getKey();
                         for (Casa destino : entry.getValue()) {
                             System.out.println("De " + origem.getLinha() + "," + origem.getColuna() +
-                                    " para " + destino.getLinha() + "," + destino.getColuna());
+
+                                               " para " + destino.getLinha() + "," + destino.getColuna());
+
                         }
                     }
                 }
@@ -95,7 +107,9 @@ public class Jogo {
                 if (casaOrigem == null || casaDestino == null) {
                     throw new MovimentoInvalidoException("Coordenadas fora do tabuleiro.");
                 }
-                if (casaOrigem.estaVazia()) {
+
+                 if (casaOrigem.estaVazia()) {
+
                     throw new MovimentoInvalidoException("Casa de origem está vazia.");
                 }
                 if (casaOrigem.getPeca().getCor() != jogadorAtual.getCorPecas()) {
@@ -115,43 +129,46 @@ public class Jogo {
                     if (!destinosPossiveisParaOrigem.contains(casaDestino)) {
                         throw new MovimentoInvalidoException("Movimento inválido. O destino escolhido não é uma captura válida para a peça de origem selecionada.");
                     }
-                    // If we are here, the selected move is a mandatory capture.
-                    // The moverPeca method will validate it again, which is fine.
+
+                    // Se chegamos aqui, o movimento selecionado é uma captura obrigatória.
+                    // O método moverPeca irá validar novamente, o que é aceitável.
                 }
 
+                // A lógica principal de movimentar a peça, determinar se é captura ou movimento simples,
+                // e então chamar tabuleiro.moverPeca permanece.
+                // Porém, se existirem capturas obrigatórias, um movimento simples deve ser proibido.
 
-                // The core logic of moving a piece, determining if it's a capture or simple move,
-                // and then calling tabuleiro.moverPeca should largely remain.
-                // However, if mandatory captures exist, a simple move should be disallowed.
+                boolean foiCaptura = false; 
 
-                boolean foiCaptura = false; // Will be set by tabuleiro.moverPeca or inferred
+                // Verifica se o movimento é uma captura com base na distância
+                // Esta verificação agora é mais uma validação geral; a captura obrigatória já foi validada acima.
 
-                // Check if the move is a capture based on distance
-                // This check is now more of a general validation; mandatory capture has specific validation above.
                 int deltaLinhaAbs = Math.abs(linhaOrigem - linhaDestino);
                 int deltaColunaAbs = Math.abs(colunaOrigem - colunaDestino);
 
                 if (!mandatoryCapturesMap.isEmpty() && !(deltaLinhaAbs > 1 && deltaColunaAbs > 1 && deltaLinhaAbs == deltaColunaAbs) ) {
-                    // If mandatory captures exist, only capture moves are allowed.
-                    // A simple move (delta == 1) or any non-diagonal/non-jump move is invalid.
-                    throw new MovimentoInvalidoException("Movimento inválido. Uma captura é obrigatória.");
+
+                     // Se existem capturas obrigatórias, apenas movimentos de captura são permitidos.
+                     // Um movimento simples (delta == 1) ou qualquer movimento não diagonal/não salto é inválido.
+                     throw new MovimentoInvalidoException("Movimento inválido. Uma captura é obrigatória.");
                 }
 
-                // At this point, if mandatoryCapturesMap was not empty, the player has chosen one of the mandatory captures.
-                // If mandatoryCapturesMap was empty, any valid move is allowed.
-                // The tabuleiro.moverPeca method handles the actual execution and internal validation (including if it's a capture or simple).
+                // Neste ponto, se mandatoryCapturesMap não estava vazio, o jogador escolheu uma das capturas obrigatórias.
+                // Se mandatoryCapturesMap estava vazio, qualquer movimento válido é permitido.
+                // O método tabuleiro.moverPeca executa e valida o movimento (incluindo se é captura ou simples).
 
-                // We need to know if a capture occurred to handle sequence captures.
-                // One way is to check the distance, as moverPeca itself doesn't return this.
-                // Or, check if a piece was actually captured. Let's rely on distance for now,
-                // as moverPeca will throw if it's an invalid capture.
+                // Precisamos saber se ocorreu uma captura para tratar sequências de capturas.
+                // Uma forma é checar a distância, já que moverPeca não retorna isso.
+                // Ou, verificar se uma peça foi realmente capturada. Vamos confiar na distância por enquanto,
+                // pois moverPeca lançará exceção se for uma captura inválida.
 
-                tabuleiro.moverPeca(casaOrigem, casaDestino); // This will throw if the move is invalid (e.g., simple move into occupied, bad jump)
+                tabuleiro.moverPeca(casaOrigem, casaDestino); 
 
-                // Determine if a capture happened for sequence logic.
-                // This relies on the fact that moverPeca would have thrown an error if it wasn't a valid jump
-                // or a valid simple move.
-                if (deltaLinhaAbs > 1) { // Captures always involve moving more than 1 row/col
+                // Determina se uma captura ocorreu para a lógica de sequência.
+                // Isso depende do fato de que moverPeca teria lançado um erro se não fosse um salto válido
+                // ou um movimento simples válido.
+                if (deltaLinhaAbs > 1) { 
+
                     foiCaptura = true;
                 }
 
@@ -166,28 +183,31 @@ public class Jogo {
 
                 if (foiCaptura) {
                     Casa pecaQueCapturouUltimaPosicao = casaDestino;
-                    // Check for sequence captures only if the current player is still the same
-                    // (which they will be if emSequenciaDeCaptura was false before this capture)
-                    // OR if they were already in a sequence.
+
+                    // Verifica se a sequência de capturas deve continuar apenas se o jogador atual ainda for o mesmo
+                    // (o que será verdade se emSequenciaDeCaptura era false antes desta captura)
+                    // OU se ele já estava em uma sequência.
+
                     List<Casa> novasCapturasPossiveis = tabuleiro.getPossiveisCapturas(pecaQueCapturouUltimaPosicao);
                     if (!novasCapturasPossiveis.isEmpty()) {
                         System.out.println("Você realizou uma captura e pode capturar novamente com a mesma peça.");
                         emSequenciaDeCaptura = true;
                         pecaEmSequencia = pecaQueCapturouUltimaPosicao;
-                        // Do not switch player, continue turn
+
                     } else {
                         emSequenciaDeCaptura = false;
                         pecaEmSequencia = null;
-                        jogadorAtual = (jogadorAtual == jogador1) ? jogador2 : jogador1; // Switch player
+                        jogadorAtual = (jogadorAtual == jogador1) ? jogador2 : jogador1;
                     }
-                } else { // Not a capture
+                } else {
                     emSequenciaDeCaptura = false;
                     pecaEmSequencia = null;
-                    jogadorAtual = (jogadorAtual == jogador1) ? jogador2 : jogador1; // Switch player
+                    jogadorAtual = (jogadorAtual == jogador1) ? jogador2 : jogador1;
                 }
 
-                // If emSequenciaDeCaptura is true at this point, player does not switch.
-                // Loop continues with the same player.
+            // Se emSequenciaDeCaptura for verdadeiro neste ponto, o jogador não troca.
+            // O loop continua com o mesmo jogador.
+
 
             } catch (MovimentoInvalidoException | NumberFormatException e) {
                 System.out.println("Erro: " + e.getMessage());
@@ -196,4 +216,6 @@ public class Jogo {
         }
         scanner.close();
     }
+
 }
+
