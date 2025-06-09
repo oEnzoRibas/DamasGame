@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="JUnit Jupiter" tests="9" skipped="0" failures="0" errors="0" time="0.085" hostname="devbox" timestamp="2025-06-08T15:08:33">
+<properties>
+<property name="file.encoding" value="UTF-8"/>
+<property name="file.separator" value="/"/>
+<property name="java.class.path" value="/app/lib/junit-platform-console-standalone-1.10.2.jar"/>
+<property name="java.class.version" value="65.0"/>
+<property name="java.home" value="/usr/lib/jvm/java-21-openjdk-amd64"/>
+<property name="java.io.tmpdir" value="/tmp"/>
+<property name="java.library.path" value="/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/>
+<property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+<property name="java.runtime.version" value="21.0.7+6-Ubuntu-0ubuntu124.04"/>
+<property name="java.specification.name" value="Java Platform API Specification"/>
+<property name="java.specification.vendor" value="Oracle Corporation"/>
+<property name="java.specification.version" value="21"/>
+<property name="java.vendor" value="Ubuntu"/>
+<property name="java.vendor.url" value="https://ubuntu.com/"/>
+<property name="java.vendor.url.bug" value="https://bugs.launchpad.net/ubuntu/+source/openjdk-21"/>
+<property name="java.version" value="21.0.7"/>
+<property name="java.version.date" value="2025-04-15"/>
+<property name="java.vm.compressedOopsMode" value="32-bit"/>
+<property name="java.vm.info" value="mixed mode, sharing"/>
+<property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+<property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+<property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+<property name="java.vm.specification.version" value="21"/>
+<property name="java.vm.vendor" value="Ubuntu"/>
+<property name="java.vm.version" value="21.0.7+6-Ubuntu-0ubuntu124.04"/>
+<property name="jdk.debug" value="release"/>
+<property name="line.separator" value="
+"/>
+<property name="native.encoding" value="UTF-8"/>
+<property name="os.arch" value="amd64"/>
+<property name="os.name" value="Linux"/>
+<property name="os.version" value="6.8.0"/>
+<property name="path.separator" value=":"/>
+<property name="stderr.encoding" value="UTF-8"/>
+<property name="stdout.encoding" value="UTF-8"/>
+<property name="sun.arch.data.model" value="64"/>
+<property name="sun.boot.library.path" value="/usr/lib/jvm/java-21-openjdk-amd64/lib"/>
+<property name="sun.cpu.endian" value="little"/>
+<property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+<property name="sun.java.command" value="/app/lib/junit-platform-console-standalone-1.10.2.jar --class-path /app/out/production:/app/out/test --scan-class-path --reports-dir=/app/test-reports"/>
+<property name="sun.java.launcher" value="SUN_STANDARD"/>
+<property name="sun.jnu.encoding" value="UTF-8"/>
+<property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+<property name="user.dir" value="/app"/>
+<property name="user.home" value="/home/swebot"/>
+<property name="user.language" value="en"/>
+<property name="user.name" value="jules"/>
+<property name="user.timezone" value="Etc/UTC"/>
+</properties>
+<testcase name="testMovimentoSimplesValido()" classname="modelo.TabuleiroTest" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:modelo.TabuleiroTest]/[method:testMovimentoSimplesValido()]
+display-name: testMovimentoSimplesValido()
+]]></system-out>
+</testcase>
+<testcase name="testCriarCasa()" classname="modelo.CasaTest" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:modelo.CasaTest]/[method:testCriarCasa()]
+display-name: testCriarCasa()
+]]></system-out>
+</testcase>
+<testcase name="testInicializacaoTabuleiro()" classname="modelo.TabuleiroTest" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:modelo.TabuleiroTest]/[method:testInicializacaoTabuleiro()]
+display-name: testInicializacaoTabuleiro()
+]]></system-out>
+</testcase>
+<testcase name="testGetCasa()" classname="modelo.TabuleiroTest" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:modelo.TabuleiroTest]/[method:testGetCasa()]
+display-name: testGetCasa()
+]]></system-out>
+</testcase>
+<testcase name="testVerificarVitoria()" classname="modelo.TabuleiroTest" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:modelo.TabuleiroTest]/[method:testVerificarVitoria()]
+display-name: testVerificarVitoria()
+]]></system-out>
+</testcase>
+<testcase name="testCriacaoJogo()" classname="controle.JogoTest" time="0.002">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:controle.JogoTest]/[method:testCriacaoJogo()]
+display-name: testCriacaoJogo()
+]]></system-out>
+</testcase>
+<testcase name="testColocarRemoverPeca()" classname="modelo.CasaTest" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:modelo.CasaTest]/[method:testColocarRemoverPeca()]
+display-name: testColocarRemoverPeca()
+]]></system-out>
+</testcase>
+<testcase name="testPromoverPeca()" classname="modelo.PecaTest" time="0.023">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:modelo.PecaTest]/[method:testPromoverPeca()]
+display-name: testPromoverPeca()
+]]></system-out>
+</testcase>
+<testcase name="testCriarPeca()" classname="modelo.PecaTest" time="0.002">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:modelo.PecaTest]/[method:testCriarPeca()]
+display-name: testCriarPeca()
+]]></system-out>
+</testcase>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]
+display-name: JUnit Jupiter
+]]></system-out>
+</testsuite>
